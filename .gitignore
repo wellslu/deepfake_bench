@@ -10,5 +10,7 @@ datasets/rgb
 datasets/FaceForensics++/manipulated_sequences
 datasets/FaceForensics++/original_sequences
 
+logs/training/*
+
 *.zip
 *.tar.gz
