@@ -6,6 +6,7 @@ pretrained: ./training/pretrained/xception-b5690688.pth   # path to a pre-traine
 model_name: xception   # model name
 backbone_name: xception  # backbone name
 
+# where to pull the model weights from
 weights_path: ./training/weights/xception_best.pth 
 
 #backbone setting
