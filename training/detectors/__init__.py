@@ -25,7 +25,7 @@ from .recce_detector import RecceDetector
 from .fwa_detector import FWADetector
 from .ffd_detector import FFDDetector
 from .videomae_detector import VideoMAEDetector
-from .clip_detector import CLIPDetector
+# from .clip_detector import CLIPDetector
 from .timesformer_detector import TimeSformerDetector
 from .xclip_detector import XCLIPDetector
 from .sbi_detector import SBIDetector
@@ -43,4 +43,4 @@ from .uia_vit_detector import UIAViTDetector
 from .multi_attention_detector import MultiAttentionDetector
 from .sia_detector import SIADetector
 from .tall_detector import TALLDetector
-from .effort_detector import EffortDetector
+# from .effort_detector import EffortDetector

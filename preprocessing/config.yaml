@@ -4,7 +4,7 @@ preprocess:
     default: 'UADFV'
   dataset_root_path: # the root path to the dataset
     type: str
-    default: '../datasets'
+    default: './datasets'
   comp: # the compression level of videos, only in the dataset of FaceForensics++.
     choices: ['raw', 'c23', 'c40']
     default: 'c23'
@@ -21,7 +21,7 @@ preprocess:
 rearrange:
   dataset_name: # the name of dataset
     choices: ['FaceForensics++', 'DeepFakeDetection', 'Celeb-DF-v1', 'Celeb-DF-v2','DFDCP', 'DFDC', 'DeeperForensics-1.0','UADFV','FaceShifter']
-    default: 'UADFV'
+    default: 'Celeb-DF-v1'
   dataset_root_path: # the root path to the dataset
     type: str
     default: '../datasets/rgb'
