@@ -41,7 +41,7 @@ parser.add_argument('--detector_path', type=str,
                     help='path to detector YAML file')
 parser.add_argument("--test_dataset", nargs="+")
 parser.add_argument('--weights_path', type=str, 
-                    default='/mntcephfs/lab_data/zhiyuanyan/benchmark_results/auc_draw/cnn_aug/resnet34_2023-05-20-16-57-22/test/FaceForensics++/ckpt_epoch_9_best.pth')
+                    default=None)
 #parser.add_argument("--lmdb", action='store_true', default=False)
 args = parser.parse_args()
 
@@ -158,9 +158,14 @@ def main():
     # If arguments are provided, they will overwrite the yaml settings
     if args.test_dataset:
         config['test_dataset'] = args.test_dataset
-    if args.weights_path:
+    if args.weights_path is not None:
         config['weights_path'] = args.weights_path
         weights_path = args.weights_path
+    elif 'weights_path' in config:
+        print('Using weights_path from config:', config['weights_path'])
+        weights_path = config['weights_path']
+    else:
+        weights_path = None
     
     # init seed
     init_seed(config)
