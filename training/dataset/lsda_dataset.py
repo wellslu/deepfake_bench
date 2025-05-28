@@ -27,7 +27,7 @@ from torch.utils.data.sampler import Sampler
 from .abstract_dataset import DeepfakeAbstractBaseDataset
 
 
-private_path_prefix = '/home/zhaokangran/cvpr24/training'
+private_path_prefix = './training'
 
 fake_dict = {
     'real': 0,
@@ -250,8 +250,13 @@ class LSDADataset(DeepfakeAbstractBaseDataset):
         return img
 
     def __getitem__(self, index):
-        name, idx, label, mode = self.img_lines[index] #这个sampler的目的是不要取重复video的图。
-        label = int(label)  # specific fake label from 1-4
+        try:
+            name, idx, label, mode = self.img_lines[index] #这个sampler的目的是不要取重复video的图。
+            label = int(label)  # specific fake label from 1-4
+        except Exception as e:
+            new_index = index-random.choice([1,index])
+            print(f'Error loading index {index} due to the loading error. Try another one at index {new_index}')
+            return self.__getitem__(new_index)
 
         #取img没什么好说的。然后在这里把规范化的img_lines转为实际路径。
         try:

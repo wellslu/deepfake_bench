@@ -34,7 +34,6 @@ from metrics.utils import get_test_metrics
 FFpp_pool=['FaceForensics++','FF-DF','FF-F2F','FF-FS','FF-NT']#
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
-
 class Trainer(object):
     def __init__(
         self,
