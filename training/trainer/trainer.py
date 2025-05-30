@@ -235,7 +235,11 @@ class Trainer(object):
         train_recorder_loss = defaultdict(Recorder)
         train_recorder_metric = defaultdict(Recorder)
 
+        test_best_metric = None
+
         for iteration, data_dict in tqdm(enumerate(train_data_loader),total=len(train_data_loader)):
+            if data_dict is None:
+                continue
             self.setTrain()
             # more elegant and more scalable way of moving data to GPU
             for key in data_dict.keys():
@@ -250,6 +254,7 @@ class Trainer(object):
                 self.swa_model.update_parameters(self.model)
 
             # compute training metric for each batch data
+            # print(len(data_dict), len(predictions))
             if type(self.model) is DDP:
                 batch_metrics = self.model.module.get_train_metrics(data_dict, predictions)
             else:
@@ -264,7 +269,7 @@ class Trainer(object):
                 train_recorder_loss[name].update(value)
 
             # run tensorboard to visualize the training process
-            if iteration % 300 == 0 and self.config['local_rank']==0:
+            if iteration % 700 == 0 and self.config['local_rank']==0:
                 if self.config['SWA'] and (epoch>self.config['swa_start'] or self.config['dry_run']):
                     self.scheduler.step()
                 # info for loss
@@ -301,31 +306,39 @@ class Trainer(object):
                 for name, recorder in train_recorder_metric.items():  # clear metric recorder
                     recorder.clear()
 
-            # run test
-            if (step_cnt+1) % test_step == 0:
-                if test_data_loaders is not None and (not self.config['ddp'] ):
-                    self.logger.info("===> Test start!")
-                    test_best_metric = self.test_epoch(
-                        epoch,
-                        iteration,
-                        test_data_loaders,
-                        step_cnt,
-                    )
-                elif test_data_loaders is not None and (self.config['ddp'] and dist.get_rank() == 0):
-                    self.logger.info("===> Test start!")
-                    test_best_metric = self.test_epoch(
-                        epoch,
-                        iteration,
-                        test_data_loaders,
-                        step_cnt,
-                    )
-                else:
-                    test_best_metric = None
+            # # run test
+            # if (step_cnt+1) % test_step == 0:
+            #     if test_data_loaders is not None and (not self.config['ddp'] ):
+            #         self.logger.info("===> Test start!")
+            #         test_best_metric = self.test_epoch(
+            #             epoch,
+            #             iteration,
+            #             test_data_loaders,
+            #             step_cnt,
+            #         )
+            #     elif test_data_loaders is not None and (self.config['ddp'] and dist.get_rank() == 0):
+            #         self.logger.info("===> Test start!")
+            #         test_best_metric = self.test_epoch(
+            #             epoch,
+            #             iteration,
+            #             test_data_loaders,
+            #             step_cnt,
+            #         )
+            #     else:
+            #         test_best_metric = None
 
-                    # total_end_time = time.time()
-            # total_elapsed_time = total_end_time - total_start_time
-            # print("总花费的时间: {:.2f} 秒".format(total_elapsed_time))
-            step_cnt += 1
+            #         # total_end_time = time.time()
+            # # total_elapsed_time = total_end_time - total_start_time
+            # # print("总花费的时间: {:.2f} 秒".format(total_elapsed_time))
+            # step_cnt += 1
+
+        self.logger.info("===> Test start!")
+        test_best_metric = self.test_epoch(
+            epoch,
+            iteration,
+            test_data_loaders,
+            step_cnt,
+        )
         return test_best_metric
 
     def get_respect_acc(self,prob,label):

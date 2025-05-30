@@ -4,7 +4,8 @@
 # description: training code.
 
 import os
-os.environ['CUDA_VISIBLE_DEVICES'] = '1'
+# os.environ['CUDA_LAUNCH_BLOCKING'] = '1'
+os.environ['CUDA_VISIBLE_DEVICES'] = '0'
 import argparse
 from os.path import join
 import cv2

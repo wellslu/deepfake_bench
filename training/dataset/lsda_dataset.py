@@ -254,7 +254,7 @@ class LSDADataset(DeepfakeAbstractBaseDataset):
             name, idx, label, mode = self.img_lines[index] #这个sampler的目的是不要取重复video的图。
             label = int(label)  # specific fake label from 1-4
         except Exception as e:
-            new_index = index-random.choice([1,index])
+            new_index = index-random.randint(1,index)
             print(f'Error loading index {index} due to the loading error. Try another one at index {new_index}')
             return self.__getitem__(new_index)
 
@@ -349,6 +349,8 @@ class LSDADataset(DeepfakeAbstractBaseDataset):
         labels_grouped = labels_grouped[valid_indices]
 
         if not valid_indices:
+            print("No valid groups found in this batch.")
+            return None
             raise ValueError("No valid groups found in this batch.")
 
         # # Shuffle the video order within each group
