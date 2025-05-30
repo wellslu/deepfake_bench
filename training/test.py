@@ -1,11 +1,16 @@
 """
 eval pretained model.
 """
+<<<<<<< HEAD
 import os
+=======
+# import os
+>>>>>>> f0246d710cdd7eefe366ae2322d33ecbed1ce8a4
 import numpy as np
 from os.path import join
 import cv2
 import random
+<<<<<<< HEAD
 import datetime
 import time
 import yaml
@@ -31,17 +36,52 @@ from trainer.trainer import Trainer
 from detectors import DETECTOR
 from metrics.base_metrics_class import Recorder
 from collections import defaultdict
+=======
+# import datetime
+# import time
+import yaml
+# import pickle
+from tqdm import tqdm
+from copy import deepcopy
+# from PIL import Image as pil_image
+from metrics.utils import get_test_metrics
+import torch
+# import torch.nn as nn
+import torch.nn.parallel
+import torch.backends.cudnn as cudnn
+# import torch.nn.functional as F
+import torch.utils.data
+# import torch.optim as optim
+
+from dataset.abstract_dataset import DeepfakeAbstractBaseDataset
+# from dataset.ff_blend import FFBlendDataset
+# from dataset.fwa_blend import FWABlendDataset
+# from dataset.pair_dataset import pairDataset
+
+# from trainer.trainer import Trainer
+from detectors import DETECTOR
+# from metrics.base_metrics_class import Recorder
+# from collections import defaultdict
+>>>>>>> f0246d710cdd7eefe366ae2322d33ecbed1ce8a4
 
 import argparse
 from logger import create_logger
 
 parser = argparse.ArgumentParser(description='Process some paths.')
 parser.add_argument('--detector_path', type=str, 
+<<<<<<< HEAD
                     default='./training/config/detector/xception.yaml',
                     help='path to detector YAML file')
 parser.add_argument("--test_dataset", nargs="+")
 parser.add_argument('--weights_path', type=str, 
                     default=None)
+=======
+                    default='/home/zhiyuanyan/DeepfakeBench/training/config/detector/resnet34.yaml',
+                    help='path to detector YAML file')
+parser.add_argument("--test_dataset", nargs="+")
+parser.add_argument('--weights_path', type=str, 
+                    default='/mntcephfs/lab_data/zhiyuanyan/benchmark_results/auc_draw/cnn_aug/resnet34_2023-05-20-16-57-22/test/FaceForensics++/ckpt_epoch_9_best.pth')
+>>>>>>> f0246d710cdd7eefe366ae2322d33ecbed1ce8a4
 #parser.add_argument("--lmdb", action='store_true', default=False)
 args = parser.parse_args()
 
@@ -70,7 +110,11 @@ def prepare_testing_data(config):
                 dataset=test_set, 
                 batch_size=config['test_batchSize'],
                 shuffle=False, 
+<<<<<<< HEAD
                 num_workers=int(config['workers']),
+=======
+                # num_workers=int(config['workers']),
+>>>>>>> f0246d710cdd7eefe366ae2322d33ecbed1ce8a4
                 collate_fn=test_set.collate_fn,
                 drop_last=False
             )
@@ -158,6 +202,7 @@ def main():
     # If arguments are provided, they will overwrite the yaml settings
     if args.test_dataset:
         config['test_dataset'] = args.test_dataset
+<<<<<<< HEAD
     if args.weights_path is not None:
         config['weights_path'] = args.weights_path
         weights_path = args.weights_path
@@ -166,6 +211,11 @@ def main():
         weights_path = config['weights_path']
     else:
         weights_path = None
+=======
+    if args.weights_path:
+        config['weights_path'] = args.weights_path
+        weights_path = args.weights_path
+>>>>>>> f0246d710cdd7eefe366ae2322d33ecbed1ce8a4
     
     # init seed
     init_seed(config)

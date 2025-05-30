@@ -108,7 +108,11 @@ optimizer:
 
 # training config
 lr_scheduler: null   # learning rate scheduler
+<<<<<<< HEAD
 nEpochs: 15   # number of epochs to train for
+=======
+nEpochs: 50   # number of epochs to train for
+>>>>>>> f0246d710cdd7eefe366ae2322d33ecbed1ce8a4
 start_epoch: 0   # manual epoch number (useful for restarts)
 save_epoch: 1   # interval epochs for saving models
 rec_iter: 100   # interval iterations for recording

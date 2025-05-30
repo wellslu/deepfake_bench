@@ -4,7 +4,11 @@ preprocess:
     default: 'UADFV'
   dataset_root_path: # the root path to the dataset
     type: str
+<<<<<<< HEAD
     default: './datasets'
+=======
+    default: '../datasets'
+>>>>>>> f0246d710cdd7eefe366ae2322d33ecbed1ce8a4
   comp: # the compression level of videos, only in the dataset of FaceForensics++.
     choices: ['raw', 'c23', 'c40']
     default: 'c23'
@@ -21,6 +25,7 @@ preprocess:
 rearrange:
   dataset_name: # the name of dataset
     choices: ['FaceForensics++', 'DeepFakeDetection', 'Celeb-DF-v1', 'Celeb-DF-v2','DFDCP', 'DFDC', 'DeeperForensics-1.0','UADFV','FaceShifter']
+<<<<<<< HEAD
     default: 'FaceForensics++'
   dataset_root_path: # the root path to the dataset
     type: str
@@ -28,6 +33,15 @@ rearrange:
   output_file_path: # the json path to the dataset
     type: str
     default: '../datasets/json'
+=======
+    default: 'UADFV'
+  dataset_root_path: # the root path to the dataset
+    type: str
+    default: './datasets'
+  output_file_path: # the json path to the dataset
+    type: str
+    default: './datasets'
+>>>>>>> f0246d710cdd7eefe366ae2322d33ecbed1ce8a4
   comp: # the compression level of videos, only in the dataset of FaceForensics++.
     choices: ['raw', 'c23', 'c40']
     default: 'c23'
@@ -40,6 +54,7 @@ rearrange:
 to_lmdb:
   dataset_name: # the name of dataset
     choices: ['FaceForensics++', 'DeepFakeDetection', 'Celeb-DF-v1', 'Celeb-DF-v2','DFDCP', 'DFDC', 'DeeperForensics-1.0','UADFV','FaceShifter']
+<<<<<<< HEAD
     default: 'FaceForensics++'
   dataset_root_path: # the root path to the dataset
     type: str
@@ -47,6 +62,15 @@ to_lmdb:
   output_lmdb_dir: # the json path to the dataset
     type: str
     default: './datasets_lmdbs'
+=======
+    default: 'UADFV'
+  dataset_root_path: # the root path to the dataset
+    type: str
+    default: './datasets'
+  output_lmdb_dir: # the json path to the dataset
+    type: str
+    default: './datasets/lmdb'
+>>>>>>> f0246d710cdd7eefe366ae2322d33ecbed1ce8a4
   comp: # the compression level of videos, only in the dataset of FaceForensics++.
     choices: ['raw', 'c23', 'c40']
     default: 'c23'

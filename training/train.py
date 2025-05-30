@@ -37,8 +37,15 @@ from dataset import *
 from metrics.utils import parse_metric_for_print
 from logger import create_logger, RankFilter
 
+<<<<<<< HEAD
 parser = argparse.ArgumentParser(description='Process some paths.')
 parser.add_argument('--detector_path', type=str,
+=======
+
+parser = argparse.ArgumentParser(description='Process some paths.')
+parser.add_argument('--detector_path', type=str,
+                    default='/data/home/zhiyuanyan/DeepfakeBenchv2/training/config/detector/sbi.yaml',
+>>>>>>> f0246d710cdd7eefe366ae2322d33ecbed1ce8a4
                     help='path to detector YAML file')
 parser.add_argument("--train_dataset", nargs="+")
 parser.add_argument("--test_dataset", nargs="+")

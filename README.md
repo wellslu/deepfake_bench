@@ -358,7 +358,14 @@ To train other detectors using the code mentioned above, you can specify the con
 If you only want to evaluate the detectors to produce the results of the cross-dataset evaluation, you can use the the [`test.py`](./training/test.py) code for evaluation. Here is an example:
 
 ```
+<<<<<<< HEAD
 python3 training/test.py --detector_path ./training/config/detector/xception.yaml
+=======
+python3 training/test.py \
+--detector_path ./training/config/detector/xception.yaml \
+--test_dataset "Celeb-DF-v1" "Celeb-DF-v2" "DFDCP" \
+--weights_path ./training/weights/xception_best.pth
+>>>>>>> f0246d710cdd7eefe366ae2322d33ecbed1ce8a4
 ```
 **Note that we have provided the pre-trained weights for each detector (you can download them from the [`link`](https://github.com/SCLBD/DeepfakeBench/releases/tag/v1.0.1)).** Make sure to put these weights in the `./training/weights` folder.
 

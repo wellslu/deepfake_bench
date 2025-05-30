@@ -2,7 +2,11 @@ mode: test
 lmdb: False
 rgb_dir: './datasets'
 lmdb_dir:  './datasets/lmdb'
+<<<<<<< HEAD
 dataset_json_folder: './datasets/json'
+=======
+dataset_json_folder: './datasets'
+>>>>>>> f0246d710cdd7eefe366ae2322d33ecbed1ce8a4
 label_dict:
   # DFD
   DFD_fake: 1

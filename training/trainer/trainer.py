@@ -34,6 +34,10 @@ from metrics.utils import get_test_metrics
 FFpp_pool=['FaceForensics++','FF-DF','FF-F2F','FF-FS','FF-NT']#
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
+<<<<<<< HEAD
+=======
+
+>>>>>>> f0246d710cdd7eefe366ae2322d33ecbed1ce8a4
 class Trainer(object):
     def __init__(
         self,
@@ -254,7 +258,6 @@ class Trainer(object):
                 self.swa_model.update_parameters(self.model)
 
             # compute training metric for each batch data
-            # print(len(data_dict), len(predictions))
             if type(self.model) is DDP:
                 batch_metrics = self.model.module.get_train_metrics(data_dict, predictions)
             else:
@@ -269,7 +272,11 @@ class Trainer(object):
                 train_recorder_loss[name].update(value)
 
             # run tensorboard to visualize the training process
+<<<<<<< HEAD
             if iteration % 700 == 0 and self.config['local_rank']==0:
+=======
+            if iteration % 300 == 0 and self.config['local_rank']==0:
+>>>>>>> f0246d710cdd7eefe366ae2322d33ecbed1ce8a4
                 if self.config['SWA'] and (epoch>self.config['swa_start'] or self.config['dry_run']):
                     self.scheduler.step()
                 # info for loss
