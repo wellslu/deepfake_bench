@@ -445,8 +445,9 @@ class generator(nn.Module):
                     lambda z: hard_example_extrapolation(z, domain_means[domain_idx], random.random()),
                     lambda z: add_gaussian_noise(z, random.random(), random.random()),
                     lambda z: difference_transform(z, domain_feature_maps[0], domain_feature_maps[1], random.random()),
-                    lambda z: random_projection_noise(z, k=random.randint(1,8), lam=random.random()),
-                    lambda z: latent_rotation(z, max_theta=random.random()),
+                    # disable the additional augmentations for now
+                    # lambda z: random_projection_noise(z, k=random.randint(1,8), lam=random.random()),
+                    # lambda z: latent_rotation(z, max_theta=random.random()),
                 ]
                 chosen_aug = random.choice(augmentations)
                 augmented = torch.stack([chosen_aug(z) for z in domain_feature_maps])

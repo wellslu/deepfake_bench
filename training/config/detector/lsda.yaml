@@ -20,11 +20,11 @@ test_dataset: [FaceForensics++]
 dataset_type: blend
 
 compression: c23  # compression-level for videos
-# train_batchSize: 20   # training batch size
-train_batchSize: 5   # training batch size
-# test_batchSize: 12   # test batch size
-test_batchSize: 3   # test batch size
-workers: 3   # number of data loading workers
+train_batchSize: 20   # training batch size
+# train_batchSize: 5   # training batch size
+test_batchSize: 12   # test batch size
+# test_batchSize: 3   # test batch size
+workers: 4   # number of data loading workers
 frame_num: {'train': 32, 'test': 32}   # number of frames to use per video in training and testing
 resolution: 256   # resolution of output image to network
 with_mask: false   # whether to include mask information in the input
@@ -110,7 +110,8 @@ optimizer:
 
 # training config
 lr_scheduler: null   # learning rate scheduler
-nEpochs: 15   # number of epochs to train for
+# nEpochs: 15   # number of epochs to train for
+nEpochs: 2   # number of epochs to train for
 start_epoch: 0   # manual epoch number (useful for restarts)
 save_epoch: 1   # interval epochs for saving models
 rec_iter: 100   # interval iterations for recording
