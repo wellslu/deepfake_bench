@@ -115,11 +115,11 @@ class LSDADetector(AbstractDetector):
         metric_batch_dict = {'acc': acc, 'auc': auc, 'eer': eer, 'ap': ap}
         return metric_batch_dict
 
-    def forward(self, data_dict: dict, inference=False) -> dict:
+    def forward(self, data_dict: dict, inference=False, feature_target=None) -> dict:
         
         # 1. Forward pass
         # pred, data_dict['label'], feat = 
-        model_output = self.model(data_dict['image'], data_dict['label'], inference=inference)
+        model_output = self.model(data_dict['image'], data_dict['label'], inference=inference, feature_target=feature_target)
         if inference:
             pred = model_output
             prob = torch.softmax(pred, dim=1)[:, 1]
@@ -490,11 +490,17 @@ class generator(nn.Module):
         return loss
 
 
-    def forward(self, cat_data, label=None, inference=False):
+    def forward(self, cat_data, label=None, inference=False, feature_target=None):
         if inference:
             # Use the common encoder for inference/testing
             student_feature = self.student_encoder.features(cat_data) 
+
             out_common = self.binary_classifier(student_feature)
+
+            if feature_target is not None:
+                # append the student feature to the feature target
+                feature_target["vectors"].append(student_feature.cpu().detach().numpy())
+
             return out_common
 
         # Obtain data

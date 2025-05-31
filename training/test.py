@@ -133,7 +133,7 @@ def choose_metric(config):
     return metric_scoring
 
 
-def test_one_dataset(model, data_loader):
+def test_one_dataset(model, data_loader, feature_target=None):
     prediction_lists = []
     feature_lists = []
     label_lists = []
@@ -150,14 +150,17 @@ def test_one_dataset(model, data_loader):
             data_dict['landmark'] = landmark.to(device)
 
         # model forward without considering gradient computation
-        predictions = inference(model, data_dict)
+        predictions = inference(model, data_dict, feature_target=feature_target)
         label_lists += list(data_dict['label'].cpu().detach().numpy())
         prediction_lists += list(predictions['prob'].cpu().detach().numpy())
         feature_lists += list(predictions['feat'].cpu().detach().numpy())
     
+    if feature_target is not None:
+        feature_target['labels'] += label_lists
+
     return np.array(prediction_lists), np.array(label_lists),np.array(feature_lists)
     
-def test_epoch(model, test_data_loaders):
+def test_epoch(model, test_data_loaders, feature_target=None):
     # set model to eval mode
     model.eval()
 
@@ -166,10 +169,11 @@ def test_epoch(model, test_data_loaders):
 
     # testing for all test data
     keys = test_data_loaders.keys()
-    for key in keys:
+    print(f"Testing on datasets: {keys}")
+    for i, key in enumerate(keys):
         data_dict = test_data_loaders[key].dataset.data_dict
         # compute loss for each dataset
-        predictions_nps, label_nps,feat_nps = test_one_dataset(model, test_data_loaders[key])
+        predictions_nps, label_nps,feat_nps = test_one_dataset(model, test_data_loaders[key], feature_target=feature_target)
         
         # compute metric for each dataset
         metric_one_dataset = get_test_metrics(y_pred=predictions_nps, y_true=label_nps,
@@ -184,8 +188,8 @@ def test_epoch(model, test_data_loaders):
     return metrics_all_datasets
 
 @torch.no_grad()
-def inference(model, data_dict):
-    predictions = model(data_dict, inference=True)
+def inference(model, data_dict, feature_target=None):
+    predictions = model(data_dict, inference=True, feature_target=feature_target)
     return predictions
 
 
@@ -230,6 +234,11 @@ def main():
     # prepare the model (detector)
     model_class = DETECTOR[config['model_name']]
     model = model_class(config).to(device)
+
+    print(f"Using device: {device}")
+    if torch.cuda.is_available():
+        print(f"Using GPU: {torch.cuda.current_device()} ({torch.cuda.get_device_name(torch.cuda.current_device())})")
+
     epoch = 0
     if weights_path:
         try:
@@ -243,7 +252,17 @@ def main():
         print('Fail to load the pre-trained weights')
     
     # start testing
-    best_metric = test_epoch(model, test_data_loaders)
+    feature_vectors = {
+        "vectors": [],
+        "labels": []
+    }
+
+    best_metric = test_epoch(model, test_data_loaders, feature_target=feature_vectors)
+
+    # save feature_vectors to a pickle file for later use
+    with open('logs/feature_vectors.pkl', 'wb') as f:
+        pickle.dump(feature_vectors, f)
+
     print('===> Test Done!')
 
 if __name__ == '__main__':

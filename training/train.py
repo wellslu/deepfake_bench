@@ -4,8 +4,8 @@
 # description: training code.
 
 import os
-# os.environ['CUDA_LAUNCH_BLOCKING'] = '1'
-os.environ['CUDA_VISIBLE_DEVICES'] = '0'
+os.environ['CUDA_LAUNCH_BLOCKING'] = '1'
+# os.environ['CUDA_VISIBLE_DEVICES'] = '0'
 import argparse
 from os.path import join
 import cv2
@@ -37,6 +37,9 @@ from dataset import *
 from metrics.utils import parse_metric_for_print
 from logger import create_logger, RankFilter
 
+import wandb
+wandb.init(project="deepfakebench")
+
 parser = argparse.ArgumentParser(description='Process some paths.')
 parser.add_argument('--detector_path', type=str,
                     help='path to detector YAML file')
@@ -48,7 +51,7 @@ parser.add_argument("--ddp", action='store_true', default=False)
 parser.add_argument('--local_rank', type=int, default=0)
 parser.add_argument('--task_target', type=str, default="", help='specify the target of current training task')
 args = parser.parse_args()
-torch.cuda.set_device(args.local_rank)
+torch.cuda.set_device(7)  # Use GPU number 7 specifically
 
 
 def init_seed(config):
