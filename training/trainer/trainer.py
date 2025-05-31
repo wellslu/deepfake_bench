@@ -132,7 +132,8 @@ class Trainer(object):
     def save_ckpt(self, phase, dataset_key,ckpt_info=None):
         save_dir = os.path.join(self.log_dir, phase, dataset_key)
         os.makedirs(save_dir, exist_ok=True)
-        ckpt_name = f"ckpt_best.pth"
+        # save every checkpoint for good measure
+        ckpt_name = f"ckpt_best_{dataset_key}.pth"
         save_path = os.path.join(save_dir, ckpt_name)
         if self.config['ddp'] == True:
             torch.save(self.model.state_dict(), save_path)
