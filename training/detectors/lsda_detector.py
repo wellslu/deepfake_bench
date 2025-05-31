@@ -278,8 +278,8 @@ class generator(nn.Module):
             self.student_encoder = self.init_efficient()
 
         self.fc_weights = nn.Sequential(
-            nn.Conv2d(in_channels=1024, out_channels=512, kernel_size=1, stride=1, padding=0),
-            nn.LeakyReLU(inplace=True),
+            # nn.Conv2d(in_channels=1024, out_channels=512, kernel_size=1, stride=1, padding=0),
+            # nn.LeakyReLU(inplace=True),
             nn.Conv2d(in_channels=512, out_channels=512, kernel_size=3, stride=1, padding=1),
             nn.LeakyReLU(inplace=True),
             nn.Conv2d(in_channels=512, out_channels=512, kernel_size=3, stride=1, padding=1),
@@ -370,50 +370,9 @@ class generator(nn.Module):
 
         def difference_transform(z_i, z_j, z_k, lambda_4):
             return z_i + lambda_4 * (z_j - z_k)
-        
-        def random_projection_noise(z: torch.Tensor, k: int = 8, lam: float = 0.1):
-            """
-            在隨機 k 維子空間擾動 latent，增加方向多樣性：
-                z' = z + lam * Pᵀ ε,   ε ~ N(0, I_k)
-            z : (N, d)
-            k : 子空間維度 (≪ d)
-            lam : 擾動強度
-            """
-            N, d = z.shape
-            device, dtype = z.device, z.dtype
-            # 隨機生成 d×k 矩陣並做 QR，得到正交基 P
-            A = torch.randn(d, k, device=device, dtype=dtype)
-            P, _ = torch.linalg.qr(A)                    # (d, k)
-            eps = torch.randn(N, k, device=device, dtype=dtype)
-            return z + lam * (eps @ P.T)
-        
-        def latent_rotation(z: torch.Tensor, max_theta: float = 0.1):
-            """
-            在隨機二維平面做小角度旋轉，保持 ‖z‖ 不變。
-            max_theta 以弧度為單位，典型 0.05~0.2。
-            """
-            N, d = z.shape
-            device, dtype = z.device, z.dtype
-            # 隨機選取兩個正交單位向量 a, b
-            a = F.normalize(torch.randn(d, device=device, dtype=dtype), dim=0)
-            # 保證與 a 正交並正規化
-            b_raw = torch.randn(d, device=device, dtype=dtype)
-            b = F.normalize(b_raw - (b_raw @ a) * a, dim=0)
-            # 隨機旋轉角度
-            theta = torch.empty(N, device=device, dtype=dtype).uniform_(-max_theta, max_theta)  # (N,)
-            # 重新組合
-            z_a = (z @ a).unsqueeze(1) * a                  # (N, d)
-            z_b = (z @ b).unsqueeze(1) * b
-            z_rest = z - z_a - z_b
-            z_rot = (torch.cos(theta).unsqueeze(1) * z_a +
-                    torch.sin(theta).unsqueeze(1) * z_b * -1 +   # 右手旋
-                    torch.sin(theta).unsqueeze(1) * z_a * 0 +    # 成分替換
-                    torch.cos(theta).unsqueeze(1) * z_b)         # 同理
-            return z_rot + z_rest
 
         def distance(z_i, z_j):
             return torch.norm(z_i - z_j)
-
 
         domain_number = len(groups_feature_maps[0])
 
@@ -445,8 +404,6 @@ class generator(nn.Module):
                     lambda z: hard_example_extrapolation(z, domain_means[domain_idx], random.random()),
                     lambda z: add_gaussian_noise(z, random.random(), random.random()),
                     lambda z: difference_transform(z, domain_feature_maps[0], domain_feature_maps[1], random.random()),
-                    lambda z: random_projection_noise(z, k=random.randint(1,8), lam=random.random()),
-                    lambda z: latent_rotation(z, max_theta=random.random()),
                 ]
                 chosen_aug = random.choice(augmentations)
                 augmented = torch.stack([chosen_aug(z) for z in domain_feature_maps])
@@ -556,8 +513,10 @@ class generator(nn.Module):
         f_outputs_aug = self.augment_domains(f_outputs)
         # Mixup in the latent space for cross-domain
         mix_f_outputs = self.mixup_in_latent_space(f_outputs)
-        aug_fake = torch.cat([f_outputs_aug, mix_f_outputs], dim=2).view(-1, self.encoder_feat_dim*2, 8, 8)
-        fc = self.fc_weights(aug_fake).view(number_of_groups, video_per_group-1, self.encoder_feat_dim, 8, 8)
+        # aug_fake = torch.cat([f_outputs_aug, mix_f_outputs], dim=2).view(-1, self.encoder_feat_dim*2, 8, 8)
+        # fc = self.fc_weights(aug_fake).view(number_of_groups, video_per_group-1, self.encoder_feat_dim, 8, 8)
+        mix_f_outputs = mix_f_outputs.reshape(-1, self.encoder_feat_dim, 8, 8)
+        fc = self.fc_weights(mix_f_outputs).view(number_of_groups, video_per_group-1, self.encoder_feat_dim, 8, 8)
         # f_outputs_new = f_outputs.reshape(-1, self.encoder_feat_dim, 8, 8)
         # fc = self.fc_weights(f_outputs_new).view(number_of_groups, video_per_group-1, self.encoder_feat_dim, 8, 8)
 
