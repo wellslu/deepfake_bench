@@ -12,7 +12,7 @@ sys.path.append(project_root_dir)
 
 import pickle
 import datetime
-import logging
+import wandb
 import numpy as np
 from copy import deepcopy
 from collections import defaultdict
@@ -269,38 +269,43 @@ class Trainer(object):
                 train_recorder_loss[name].update(value)
 
             # run tensorboard to visualize the training process
-            if iteration % 700 == 0 and self.config['local_rank']==0:
+            if iteration % 10 == 0 and self.config['local_rank']==0:
                 if self.config['SWA'] and (epoch>self.config['swa_start'] or self.config['dry_run']):
                     self.scheduler.step()
+                # print(f"Iter: {step_cnt}, lr: {self.optimizer.param_groups[0]['lr']}")
                 # info for loss
-                loss_str = f"Iter: {step_cnt}    "
-                for k, v in train_recorder_loss.items():
-                    v_avg = v.average()
-                    if v_avg == None:
-                        loss_str += f"training-loss, {k}: not calculated"
-                        continue
-                    loss_str += f"training-loss, {k}: {v_avg}    "
-                    # tensorboard-1. loss
-                    writer = self.get_writer('train', ','.join(self.config['train_dataset']), k)
-                    writer.add_scalar(f'train_loss/{k}', v_avg, global_step=step_cnt)
-                self.logger.info(loss_str)
+                # loss_str = f"Iter: {step_cnt}    "
+                # for k, v in train_recorder_loss.items():
+                #     v_avg = v.average()
+                #     if v_avg == None:
+                #         loss_str += f"training-loss, {k}: not calculated"
+                #         continue
+                #     loss_str += f"training-loss, {k}: {v_avg}    "
+                #     # tensorboard-1. loss
+                #     writer = self.get_writer('train', ','.join(self.config['train_dataset']), k)
+                #     writer.add_scalar(f'train_loss/{k}', v_avg, global_step=step_cnt)
+                # self.logger.info(loss_str)
+                # Prepend "train_loss" to each key in train_recorder_loss
+                train_losses_to_log = {f"train_loss/{k}": v.average() for k, v in train_recorder_loss.items() if v.average() is not None}
+                wandb.log(train_losses_to_log)
                 # info for metric
-                metric_str = f"Iter: {step_cnt}    "
-                for k, v in train_recorder_metric.items():
-                    v_avg = v.average()
-                    if v_avg == None:
-                        metric_str += f"training-metric, {k}: not calculated    "
-                        continue
-                    metric_str += f"training-metric, {k}: {v_avg}    "
-                    # tensorboard-2. metric
-                    writer = self.get_writer('train', ','.join(self.config['train_dataset']), k)
-                    writer.add_scalar(f'train_metric/{k}', v_avg, global_step=step_cnt)
-                self.logger.info(metric_str)
-
-
+                # metric_str = f"Iter: {step_cnt}    "
+                # for k, v in train_recorder_metric.items():
+                #     v_avg = v.average()
+                #     if v_avg == None:
+                #         metric_str += f"training-metric, {k}: not calculated    "
+                #         continue
+                #     metric_str += f"training-metric, {k}: {v_avg}    "
+                #     # tensorboard-2. metric
+                #     writer = self.get_writer('train', ','.join(self.config['train_dataset']), k)
+                #     writer.add_scalar(f'train_metric/{k}', v_avg, global_step=step_cnt)
+                # self.logger.info(metric_str)
+                # Prepend "train_metric/" to each key in train_recorder_metric
+                train_metrics_to_log = {f"train_metric/{k}": v.average() for k, v in train_recorder_metric.items() if v.average() is not None}
+                wandb.log(train_metrics_to_log)
 
                 # clear recorder.
-                # Note we only consider the current 300 samples for computing batch-level loss/metric
+                # Note we only consider the current K samples for computing batch-level loss/metric
                 for name, recorder in train_recorder_loss.items():  # clear loss recorder
                     recorder.clear()
                 for name, recorder in train_recorder_metric.items():  # clear metric recorder
@@ -456,6 +461,7 @@ class Trainer(object):
                 for k, v in metric_one_dataset.items():
                     metric_str += f"testing-metric, {k}: {v}    "
                 self.logger.info(metric_str)
+                wandb.log(metric_one_dataset)
                 continue
             self.save_best(epoch,iteration,step,losses_one_dataset_recorder,key,metric_one_dataset)
 
