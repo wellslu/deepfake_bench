@@ -259,8 +259,10 @@ def main():
 
     best_metric = test_epoch(model, test_data_loaders, feature_target=feature_vectors)
 
+    model_name = weights_path.split('/')[-1].split('.')[0] if weights_path else 'model'
+
     # save feature_vectors to a pickle file for later use
-    with open('logs/feature_vectors.pkl', 'wb') as f:
+    with open(f"logs/{model_name}_feature_vectors.pkl", 'wb') as f:
         pickle.dump(feature_vectors, f)
 
     print('===> Test Done!')

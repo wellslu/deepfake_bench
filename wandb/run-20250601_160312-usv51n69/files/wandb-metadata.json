@@ -1,0 +1,155 @@
+{
+    "os": "Linux-5.15.0-92-generic-x86_64-with-debian-bookworm-sid",
+    "python": "3.7.2",
+    "heartbeatAt": "2025-06-01T23:03:12.981972",
+    "startedAt": "2025-06-01T23:03:12.531683",
+    "docker": null,
+    "cuda": null,
+    "args": [
+        "--detector_path",
+        "training/config/config/detector/efficientnetb4.yaml"
+    ],
+    "state": "running",
+    "program": "training/train.py",
+    "codePathLocal": "training/train.py",
+    "codePath": "training/train.py",
+    "git": {
+        "remote": "git@github.com:wellslu/deepfake_bench.git",
+        "commit": "8cafe1b3ad6a0aaa9486678f3cf7b1e5e95f7808"
+    },
+    "email": "wellslupitneylu@gmail.com",
+    "root": "/home/w_lu/DeepfakeBench",
+    "host": "mllab07",
+    "username": "w_lu",
+    "executable": "/home/w_lu/.conda/envs/DeepfakeBench/bin/python",
+    "cpu_count": 10,
+    "cpu_count_logical": 20,
+    "cpu_freq": {
+        "current": 2444.8042,
+        "min": 1200.0,
+        "max": 4700.0
+    },
+    "cpu_freq_per_core": [
+        {
+            "current": 4700.0,
+            "min": 1200.0,
+            "max": 4700.0
+        },
+        {
+            "current": 2900.0,
+            "min": 1200.0,
+            "max": 4700.0
+        },
+        {
+            "current": 3000.0,
+            "min": 1200.0,
+            "max": 4700.0
+        },
+        {
+            "current": 1303.969,
+            "min": 1200.0,
+            "max": 4700.0
+        },
+        {
+            "current": 1200.0,
+            "min": 1200.0,
+            "max": 4700.0
+        },
+        {
+            "current": 3100.0,
+            "min": 1200.0,
+            "max": 4700.0
+        },
+        {
+            "current": 4700.0,
+            "min": 1200.0,
+            "max": 4700.0
+        },
+        {
+            "current": 1700.0,
+            "min": 1200.0,
+            "max": 4700.0
+        },
+        {
+            "current": 1900.0,
+            "min": 1200.0,
+            "max": 4700.0
+        },
+        {
+            "current": 1200.0,
+            "min": 1200.0,
+            "max": 4700.0
+        },
+        {
+            "current": 1200.0,
+            "min": 1200.0,
+            "max": 4700.0
+        },
+        {
+            "current": 1200.0,
+            "min": 1200.0,
+            "max": 4700.0
+        },
+        {
+            "current": 1200.0,
+            "min": 1200.0,
+            "max": 4700.0
+        },
+        {
+            "current": 3100.0,
+            "min": 1200.0,
+            "max": 4700.0
+        },
+        {
+            "current": 3100.0,
+            "min": 1200.0,
+            "max": 4700.0
+        },
+        {
+            "current": 1200.0,
+            "min": 1200.0,
+            "max": 4700.0
+        },
+        {
+            "current": 1200.0,
+            "min": 1200.0,
+            "max": 4700.0
+        },
+        {
+            "current": 1200.0,
+            "min": 1200.0,
+            "max": 4700.0
+        },
+        {
+            "current": 1200.0,
+            "min": 1200.0,
+            "max": 4700.0
+        },
+        {
+            "current": 3100.0,
+            "min": 1200.0,
+            "max": 4700.0
+        }
+    ],
+    "disk": {
+        "/": {
+            "total": 456.39366912841797,
+            "used": 432.8353462219238
+        }
+    },
+    "gpu": "NVIDIA RTX A4000",
+    "gpu_count": 2,
+    "gpu_devices": [
+        {
+            "name": "NVIDIA RTX A4000",
+            "memory_total": 17171480576
+        },
+        {
+            "name": "NVIDIA RTX A4000",
+            "memory_total": 17171480576
+        }
+    ],
+    "memory": {
+        "total": 62.484134674072266
+    }
+}

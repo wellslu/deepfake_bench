@@ -5,7 +5,7 @@ log_dir: logs/evaluations/lsda
 model_name: lsda   # model name
 backbone_name: efficientnetb4  # backbone name
 
-weights_path: ./checkpoints/lsda_epoch_0_no_edit.pth   # path to a pre-trained model, if using one
+weights_path: ./checkpoints/lsda_epoch_1_no_edit.pth   # path to a pre-trained model, if using one
 
 #backbone setting
 backbone_config:
@@ -111,8 +111,8 @@ optimizer:
 
 # training config
 lr_scheduler: null   # learning rate scheduler
-# nEpochs: 15   # number of epochs to train for
-nEpochs: 2   # number of epochs to train for
+nEpochs: 15   # number of epochs to train for
+# nEpochs: 2   # number of epochs to train for
 start_epoch: 0   # manual epoch number (useful for restarts)
 save_epoch: 1   # interval epochs for saving models
 rec_iter: 100   # interval iterations for recording

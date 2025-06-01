@@ -278,8 +278,8 @@ class generator(nn.Module):
             self.student_encoder = self.init_efficient()
 
         self.fc_weights = nn.Sequential(
-            # nn.Conv2d(in_channels=1024, out_channels=512, kernel_size=1, stride=1, padding=0),
-            # nn.LeakyReLU(inplace=True),
+            nn.Conv2d(in_channels=1024, out_channels=512, kernel_size=1, stride=1, padding=0),
+            nn.LeakyReLU(inplace=True),
             nn.Conv2d(in_channels=512, out_channels=512, kernel_size=3, stride=1, padding=1),
             nn.LeakyReLU(inplace=True),
             nn.Conv2d(in_channels=512, out_channels=512, kernel_size=3, stride=1, padding=1),
@@ -515,14 +515,14 @@ class generator(nn.Module):
 
 
 
+        # Note: you can disable this block and enable the next one to disable augmentation
         # Perform augmentation in the latent space / f_out 只包含 fake
         f_outputs_aug = self.augment_domains(f_outputs)
         # Mixup in the latent space for cross-domain
         mix_f_outputs = self.mixup_in_latent_space(f_outputs)
-        # aug_fake = torch.cat([f_outputs_aug, mix_f_outputs], dim=2).view(-1, self.encoder_feat_dim*2, 8, 8)
-        # fc = self.fc_weights(aug_fake).view(number_of_groups, video_per_group-1, self.encoder_feat_dim, 8, 8)
-        mix_f_outputs = mix_f_outputs.reshape(-1, self.encoder_feat_dim, 8, 8)
-        fc = self.fc_weights(mix_f_outputs).view(number_of_groups, video_per_group-1, self.encoder_feat_dim, 8, 8)
+        aug_fake = torch.cat([f_outputs_aug, mix_f_outputs], dim=2).view(-1, self.encoder_feat_dim*2, 8, 8)
+        fc = self.fc_weights(aug_fake).view(number_of_groups, video_per_group-1, self.encoder_feat_dim, 8, 8)
+
         # f_outputs_new = f_outputs.reshape(-1, self.encoder_feat_dim, 8, 8)
         # fc = self.fc_weights(f_outputs_new).view(number_of_groups, video_per_group-1, self.encoder_feat_dim, 8, 8)
 

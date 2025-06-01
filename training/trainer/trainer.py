@@ -12,7 +12,7 @@ sys.path.append(project_root_dir)
 
 import pickle
 import datetime
-import wandb
+# import wandb
 import numpy as np
 from copy import deepcopy
 from collections import defaultdict
@@ -132,7 +132,8 @@ class Trainer(object):
     def save_ckpt(self, phase, dataset_key,ckpt_info=None):
         save_dir = os.path.join(self.log_dir, phase, dataset_key)
         os.makedirs(save_dir, exist_ok=True)
-        ckpt_name = f"ckpt_best.pth"
+        # save every checkpoint for good measure
+        ckpt_name = f"ckpt_best_{dataset_key}.pth"
         save_path = os.path.join(save_dir, ckpt_name)
         if self.config['ddp'] == True:
             torch.save(self.model.state_dict(), save_path)
@@ -287,7 +288,7 @@ class Trainer(object):
                 # self.logger.info(loss_str)
                 # Prepend "train_loss" to each key in train_recorder_loss
                 train_losses_to_log = {f"train_loss/{k}": v.average() for k, v in train_recorder_loss.items() if v.average() is not None}
-                wandb.log(train_losses_to_log)
+                # wandb.log(train_losses_to_log)
                 # info for metric
                 # metric_str = f"Iter: {step_cnt}    "
                 # for k, v in train_recorder_metric.items():
@@ -302,7 +303,7 @@ class Trainer(object):
                 # self.logger.info(metric_str)
                 # Prepend "train_metric/" to each key in train_recorder_metric
                 train_metrics_to_log = {f"train_metric/{k}": v.average() for k, v in train_recorder_metric.items() if v.average() is not None}
-                wandb.log(train_metrics_to_log)
+                # wandb.log(train_metrics_to_log)
 
                 # clear recorder.
                 # Note we only consider the current K samples for computing batch-level loss/metric
@@ -310,7 +311,7 @@ class Trainer(object):
                     recorder.clear()
                 for name, recorder in train_recorder_metric.items():  # clear metric recorder
                     recorder.clear()
-
+                    
             # # run test
             # if (step_cnt+1) % test_step == 0:
             #     if test_data_loaders is not None and (not self.config['ddp'] ):
@@ -395,6 +396,14 @@ class Trainer(object):
         improved = (metric_one_dataset[self.metric_scoring] > best_metric) if self.metric_scoring != 'eer' else (
                     metric_one_dataset[self.metric_scoring] < best_metric)
         if improved:
+            save_dir = os.path.join(self.log_dir, key, f"{epoch}+{iteration}")
+            os.makedirs(save_dir, exist_ok=True)
+            ckpt_name = f"ckpt_{epoch}_{iteration}.pth"
+            save_path = os.path.join(save_dir, ckpt_name)
+            print(save_path)
+            torch.save(self.model.state_dict(), save_path)
+            
+            print(f"===> {key} dataset: {self.metric_scoring} improved from {best_metric} to {metric_one_dataset[self.metric_scoring]} at epoch {epoch}, iteration {iteration}, step {step}")
             # Update the best metric
             self.best_metrics_all_time[key][self.metric_scoring] = metric_one_dataset[self.metric_scoring]
             if key == 'avg':
@@ -461,7 +470,7 @@ class Trainer(object):
                 for k, v in metric_one_dataset.items():
                     metric_str += f"testing-metric, {k}: {v}    "
                 self.logger.info(metric_str)
-                wandb.log(metric_one_dataset)
+                # wandb.log(metric_one_dataset)
                 continue
             self.save_best(epoch,iteration,step,losses_one_dataset_recorder,key,metric_one_dataset)
 
