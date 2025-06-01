@@ -396,6 +396,7 @@ class Trainer(object):
         improved = (metric_one_dataset[self.metric_scoring] > best_metric) if self.metric_scoring != 'eer' else (
                     metric_one_dataset[self.metric_scoring] < best_metric)
         if improved:
+            print(f"===> {key} dataset: {self.metric_scoring} improved from {best_metric} to {metric_one_dataset[self.metric_scoring]} at epoch {epoch}, iteration {iteration}, step {step}")
             # Update the best metric
             self.best_metrics_all_time[key][self.metric_scoring] = metric_one_dataset[self.metric_scoring]
             if key == 'avg':

@@ -559,12 +559,14 @@ class generator(nn.Module):
 
 
 
+        # Note: you can disable this block and enable the next one to disable augmentation
         # Perform augmentation in the latent space / f_out 只包含 fake
         f_outputs_aug = self.augment_domains(f_outputs)
         # Mixup in the latent space for cross-domain
         mix_f_outputs = self.mixup_in_latent_space(f_outputs)
         aug_fake = torch.cat([f_outputs_aug, mix_f_outputs], dim=2).view(-1, self.encoder_feat_dim*2, 8, 8)
         fc = self.fc_weights(aug_fake).view(number_of_groups, video_per_group-1, self.encoder_feat_dim, 8, 8)
+
         # f_outputs_new = f_outputs.reshape(-1, self.encoder_feat_dim, 8, 8)
         # fc = self.fc_weights(f_outputs_new).view(number_of_groups, video_per_group-1, self.encoder_feat_dim, 8, 8)
 
